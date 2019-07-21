@@ -72,7 +72,7 @@ namespace Complete
         private void OnDeath ()
         {
             // Set the flag so that this function is only called once.
-            m_Dead = true;
+            /*m_Dead = true;
 
             // Move the instantiated explosion prefab to the tank's position and turn it on.
             m_ExplosionParticles.transform.position = transform.position;
@@ -85,7 +85,11 @@ namespace Complete
             m_ExplosionAudio.Play();
 
             // Turn the tank off.
-            gameObject.SetActive (false);
+            gameObject.SetActive (false);*/
+
+            TankAgent otherAgent = GetComponent<TankAgent>();
+            otherAgent.AddReward(-1.0f);
+            otherAgent.Done();
         }
     }
 }

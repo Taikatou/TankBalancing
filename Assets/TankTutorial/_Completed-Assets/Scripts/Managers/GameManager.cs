@@ -145,7 +145,7 @@ namespace Complete
             if (m_RoundWinner != null)
             {
                 m_RoundWinner.m_Wins++;
-                m_RoundWinner.TankAgent.AddReward(10);
+                m_RoundWinner.TankAgent.AddReward(1);
             }
 
             // Now the winner's score has been incremented, see if someone has one the game.

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using Complete;
-using MLAgents;
 using UnityEngine;
+using MLAgents;
+using Complete;
 
 public class TankAgent : Agent
 {
@@ -11,6 +10,13 @@ public class TankAgent : Agent
     Rigidbody agentRB;  //cached on initialization
     TankMovement tankMovement;
     TankShooting tankShooting;
+
+    public float spawnAreaMarginMultiplier = 0.5f;
+
+    [HideInInspector]
+    public Bounds areaBounds;
+
+    public GameObject ground;
 
     void Awake()
     {
@@ -20,6 +26,7 @@ public class TankAgent : Agent
     public override void InitializeAgent()
     {
         base.InitializeAgent();
+        areaBounds = ground.GetComponent<Collider>().bounds;
         rayPer = GetComponent<RayPerception>();
         agentRB = GetComponent<Rigidbody>();
         tankMovement = GetComponent<TankMovement>();
@@ -67,12 +74,33 @@ public class TankAgent : Agent
         tankMovement.UpdateAgent(moveForward, turn);
 
         tankShooting.UpdateAI(vectorAction[2]);
-        string output = "";
-        foreach (var input in vectorAction)
-        {
-            output += input + ", ";
-        }
-        Debug.Log(output);
     }
+
+    public override void AgentReset()
+    {
+        base.AgentReset();
+        this.transform.position = GetRandomSpawnPos();
+    }
+
+    public Vector3 GetRandomSpawnPos()
+    {
+        bool foundNewSpawnLocation = false;
+        Vector3 randomSpawnPos = Vector3.zero;
+        while (foundNewSpawnLocation == false)
+        {
+            float randomPosX = Random.Range(-areaBounds.extents.x * spawnAreaMarginMultiplier,
+                                areaBounds.extents.x * spawnAreaMarginMultiplier);
+
+            float randomPosZ = Random.Range(-areaBounds.extents.z * spawnAreaMarginMultiplier,
+                                            areaBounds.extents.z * spawnAreaMarginMultiplier);
+            randomSpawnPos = ground.transform.position + new Vector3(randomPosX, 0f, randomPosZ);
+            if (Physics.CheckBox(randomSpawnPos, new Vector3(2.5f, 0.01f, 2.5f)) == false)
+            {
+                foundNewSpawnLocation = true;
+            }
+        }
+        return randomSpawnPos;
+    }
+
 }
 

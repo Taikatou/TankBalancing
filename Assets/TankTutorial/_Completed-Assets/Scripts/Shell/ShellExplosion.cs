@@ -14,6 +14,8 @@ namespace Complete
 
         public TankAgent m_TankAgent;
 
+        public float Ratio = 0.5f;
+
         private void Start ()
         {
             // If it isn't destroyed by then, destroy the shell after it's lifetime.
@@ -54,12 +56,13 @@ namespace Complete
                     // Deal this damage to the tank.
                     targetHealth.TakeDamage(damage);
 
+                    float reward = (damage / m_MaxDamage) * Ratio;
                     if (m_TankAgent)
                     {
                         if (targetRigidbody != m_TankAgent.GetComponent<Rigidbody>())
                         {
                             Debug.Log("Reward damage");
-                            m_TankAgent.AddReward(damage);
+                            m_TankAgent.AddReward(reward);
                         }
                     }
 
@@ -67,7 +70,7 @@ namespace Complete
                     if (otherAgent)
                     {
                         Debug.Log("Deduct damage");
-                        otherAgent.AddReward(-damage);
+                        otherAgent.AddReward(-reward);
                     }
                 }
             }
