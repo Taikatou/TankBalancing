@@ -14,6 +14,8 @@ namespace Complete
 
         public TankAgent m_TankAgent;
 
+        public float RewardRatio = 0.5f;
+
         private void Start ()
         {
             // If it isn't destroyed by then, destroy the shell after it's lifetime.
@@ -30,44 +32,46 @@ namespace Complete
             for (int i = 0; i < colliders.Length; i++)
             {
                 // ... and find their rigidbody.
-                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody> ();
+                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
 
                 // If they don't have a rigidbody, go on to the next collider.
                 if (!targetRigidbody)
                     continue;
 
                 // Add an explosion force.
-                targetRigidbody.AddExplosionForce (m_ExplosionForce, transform.position, m_ExplosionRadius);
+                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
                 // Find the TankHealth script associated with the rigidbody.
-                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth> ();
+                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
                 // If there is no TankHealth script attached to the gameobject, go on to the next collider.
                 if (!targetHealth)
                     continue;
 
                 // Calculate the amount of damage the target should take based on it's distance from the shell.
-                float damage = CalculateDamage (targetRigidbody.position);
+                bool CalculateDMG = true;
 
-                if (damage > 0)
+                if (CalculateDMG)
                 {
-                    // Deal this damage to the tank.
-                    targetHealth.TakeDamage(damage);
+                    float damage = CalculateDamage(targetRigidbody.position);
 
-                    if (m_TankAgent)
+                    if (damage > 0)
                     {
-                        if (targetRigidbody != m_TankAgent.GetComponent<Rigidbody>())
+                        // Deal this damage to the tank.
+                        targetHealth.TakeDamage(damage);
+
+                        float reward = (damage / m_MaxDamage) * RewardRatio;
+
+                        if (m_TankAgent)
                         {
-                            Debug.Log("Reward damage");
-                            m_TankAgent.AddReward(damage);
+                            m_TankAgent.AddReward(reward);
                         }
-                    }
 
-                    TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
-                    if (otherAgent)
-                    {
-                        Debug.Log("Deduct damage");
-                        otherAgent.AddReward(-damage);
+                        TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
+                        if (otherAgent)
+                        {
+                            otherAgent.AddReward(-reward);
+                        }
                     }
                 }
             }

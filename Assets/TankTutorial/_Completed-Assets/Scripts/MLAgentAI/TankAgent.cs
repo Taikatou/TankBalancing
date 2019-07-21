@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Complete;
+﻿using Complete;
 using MLAgents;
 using UnityEngine;
 
@@ -11,10 +8,13 @@ public class TankAgent : Agent
     Rigidbody agentRB;  //cached on initialization
     TankMovement tankMovement;
     TankShooting tankShooting;
+    public Transform startPosition;
+
+    TankAcademy tankAcademy;
 
     void Awake()
     {
-        //academy = FindObjectOfType<PushBlockAcademy>(); //cache the academy
+        tankAcademy = FindObjectOfType<TankAcademy>(); //cache the academy
     }
 
     public override void InitializeAgent()
@@ -59,7 +59,7 @@ public class TankAgent : Agent
     public override void AgentAction(float[] vectorAction, string textAction)
     {
         float moveForward = GetDecision(vectorAction[0]);
-        
+
         float turn = GetDecision(vectorAction[1]);
 
         // Penalty given each step to encourage agent to finish task quickly.
@@ -67,12 +67,15 @@ public class TankAgent : Agent
         tankMovement.UpdateAgent(moveForward, turn);
 
         tankShooting.UpdateAI(vectorAction[2]);
-        string output = "";
-        foreach (var input in vectorAction)
-        {
-            output += input + ", ";
-        }
-        Debug.Log(output);
+    }
+
+    public override void AgentReset()
+    {
+        Rigidbody rBody = GetComponent<Rigidbody>();
+        Debug.Log(startPosition.position);
+        rBody.MovePosition(startPosition.position);
+        TankHealth t = GetComponent<TankHealth>();
+        t.ResetHealth();
     }
 }
 

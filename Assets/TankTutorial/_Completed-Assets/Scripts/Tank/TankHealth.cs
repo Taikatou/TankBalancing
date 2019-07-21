@@ -68,24 +68,18 @@ namespace Complete
             m_FillImage.color = Color.Lerp (m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
         }
 
+        public void ResetHealth()
+        {
+            m_CurrentHealth = m_StartingHealth;
+            SetHealthUI();
+        }
+
 
         private void OnDeath ()
         {
-            // Set the flag so that this function is only called once.
-            m_Dead = true;
-
-            // Move the instantiated explosion prefab to the tank's position and turn it on.
-            m_ExplosionParticles.transform.position = transform.position;
-            m_ExplosionParticles.gameObject.SetActive (true);
-
-            // Play the particle system of the tank exploding.
-            m_ExplosionParticles.Play ();
-
-            // Play the tank explosion sound effect.
-            m_ExplosionAudio.Play();
-
-            // Turn the tank off.
-            gameObject.SetActive (false);
+            TankAgent t = GetComponent<TankAgent>();
+            t.AddReward(-1);
+            t.Done();
         }
     }
 }
