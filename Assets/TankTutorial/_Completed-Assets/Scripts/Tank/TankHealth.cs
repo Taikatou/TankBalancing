@@ -42,8 +42,8 @@ namespace Complete
             SetHealthUI();
         }
 
-
-        public void TakeDamage (float amount)
+        // returns death
+        public bool TakeDamage (float amount)
         {
             // Reduce current health by the amount of damage done.
             m_CurrentHealth -= amount;
@@ -55,7 +55,10 @@ namespace Complete
             if (m_CurrentHealth <= 0f && !m_Dead)
             {
                 OnDeath ();
+                return true;
             }
+
+            return false;
         }
 
 

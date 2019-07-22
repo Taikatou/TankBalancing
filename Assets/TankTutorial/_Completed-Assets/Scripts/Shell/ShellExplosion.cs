@@ -48,30 +48,33 @@ namespace Complete
                 if (!targetHealth)
                     continue;
 
-                // Calculate the amount of damage the target should take based on it's distance from the shell.
-                bool CalculateDMG = true;
+                float damage = CalculateDamage(targetRigidbody.position);
 
-                if (CalculateDMG)
+                TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
+
+                bool hitSelf = otherAgent == m_TankAgent;
+                if (damage > 0 && hitSelf)
                 {
-                    float damage = CalculateDamage(targetRigidbody.position);
+                    // Deal this damage to the tank.
+                    bool dead = targetHealth.TakeDamage(damage);
 
-                    if (damage > 0)
+                    float reward = (damage / m_MaxDamage) * RewardRatio;
+
+                    if (dead)
                     {
-                        // Deal this damage to the tank.
-                        targetHealth.TakeDamage(damage);
+                        m_TankAgent.AddReward(1.0f);
+                        otherAgent.AddReward(-1.0f);
 
-                        float reward = (damage / m_MaxDamage) * RewardRatio;
-
-                        if (m_TankAgent)
+                        TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
+                        foreach (var tank in tanks)
                         {
-                            m_TankAgent.AddReward(reward);
+                            tank.Done();
                         }
-
-                        TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
-                        if (otherAgent)
-                        {
-                            otherAgent.AddReward(-reward);
-                        }
+                    }
+                    else
+                    {
+                        m_TankAgent.AddReward(reward);
+                        otherAgent.AddReward(-reward);
                     }
                 }
             }

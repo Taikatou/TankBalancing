@@ -10,6 +10,8 @@ public class TankAgent : Agent
     TankShooting tankShooting;
     public Transform startPosition;
 
+    public string Name;
+
     TankAcademy tankAcademy;
 
     void Awake()
@@ -72,7 +74,6 @@ public class TankAgent : Agent
     public override void AgentReset()
     {
         Rigidbody rBody = GetComponent<Rigidbody>();
-        Debug.Log(startPosition.position);
         rBody.MovePosition(startPosition.position);
         TankHealth t = GetComponent<TankHealth>();
         t.ResetHealth();

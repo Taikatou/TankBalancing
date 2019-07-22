@@ -133,7 +133,7 @@ namespace Complete
             Rigidbody shellInstance =
                 Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-            m_Shell.GetComponent<ShellExplosion>().m_TankAgent = GetComponent<TankAgent>();
+            shellInstance.GetComponent<ShellExplosion>().m_TankAgent = GetComponent<TankAgent>();
 
             // Set the shell's velocity to the launch force in the fire position's forward direction.
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; 
