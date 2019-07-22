@@ -30,8 +30,8 @@ public class TankAgent : Agent
 
     public override void CollectObservations()
     {
-        float rayDistance = 12f;
-        float[] rayAngles = { 0f, 45f, 90f, 135f, 180f, 110f, 70f };
+        float rayDistance = 100f;
+        float[] rayAngles = { 0f, 45f, 90f, 135f, 180f, 110f, 70f, 225f, 270f, 315f};
         var detectableObjects = new[] { "tank", "wall", "bullet" };
         AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
         AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1.5f, 0f));

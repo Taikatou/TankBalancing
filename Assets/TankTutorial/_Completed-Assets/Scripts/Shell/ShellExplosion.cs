@@ -52,13 +52,15 @@ namespace Complete
 
                 TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
 
+                print(otherAgent.Name + "  " + m_TankAgent.Name);
                 bool hitSelf = otherAgent == m_TankAgent;
-                if (damage > 0 && hitSelf)
+                Debug.Log("hit self" + hitSelf);
+                if (damage > 0 && !hitSelf)
                 {
                     // Deal this damage to the tank.
                     bool dead = targetHealth.TakeDamage(damage);
 
-                    float reward = (damage / m_MaxDamage) * RewardRatio;
+                    float reward = damage / m_MaxDamage;
 
                     if (dead)
                     {
@@ -74,7 +76,7 @@ namespace Complete
                     else
                     {
                         m_TankAgent.AddReward(reward);
-                        otherAgent.AddReward(-reward);
+                        otherAgent.AddReward(-reward * RewardRatio);
                     }
                 }
             }
