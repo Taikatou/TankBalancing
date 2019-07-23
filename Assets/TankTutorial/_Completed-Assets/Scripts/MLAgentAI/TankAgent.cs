@@ -1,31 +1,26 @@
-﻿using Complete;
+﻿using System.Collections.Generic;
+using Complete;
 using MLAgents;
 using UnityEngine;
 
 public class TankAgent : Agent
 {
     RayPerception rayPer;
-    Rigidbody agentRB;  //cached on initialization
     TankMovement tankMovement;
     TankShooting tankShooting;
+    Rigidbody m_Rigidbody;
+
     public Transform startPosition;
 
     public string Name;
-
-    TankAcademy tankAcademy;
-
-    void Awake()
-    {
-        tankAcademy = FindObjectOfType<TankAcademy>(); //cache the academy
-    }
 
     public override void InitializeAgent()
     {
         base.InitializeAgent();
         rayPer = GetComponent<RayPerception>();
-        agentRB = GetComponent<Rigidbody>();
         tankMovement = GetComponent<TankMovement>();
         tankShooting = GetComponent<TankShooting>();
+        m_Rigidbody = GetComponent<Rigidbody>();
     }
 
     public override void CollectObservations()
@@ -33,8 +28,10 @@ public class TankAgent : Agent
         float rayDistance = 100f;
         float[] rayAngles = { 0f, 45f, 90f, 135f, 180f, 110f, 70f, 225f, 270f, 315f};
         var detectableObjects = new[] { "tank", "wall", "bullet" };
-        AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
-        AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1.5f, 0f));
+        List<float> observations1 = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+        AddVectorObs(m_Rigidbody.transform.rotation.y);
+        AddVectorObs(tankShooting.LaunchForce);
+        AddVectorObs(observations1);
     }
 
     /// <summary>

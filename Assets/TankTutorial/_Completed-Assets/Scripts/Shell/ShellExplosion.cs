@@ -52,8 +52,8 @@ namespace Complete
 
                 TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
 
-                print(otherAgent.Name + "  " + m_TankAgent.Name);
-                bool hitSelf = otherAgent == m_TankAgent;
+                bool validAgents = otherAgent != null && m_TankAgent != null;
+                bool hitSelf = (otherAgent == m_TankAgent) && validAgents;
                 Debug.Log("hit self" + hitSelf);
                 if (damage > 0 && !hitSelf)
                 {
@@ -64,8 +64,8 @@ namespace Complete
 
                     if (dead)
                     {
-                        m_TankAgent.AddReward(1.0f);
-                        otherAgent.AddReward(-1.0f);
+                        m_TankAgent?.AddReward(1.0f);
+                        otherAgent?.AddReward(-1.0f);
 
                         TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
                         foreach (var tank in tanks)
@@ -75,8 +75,8 @@ namespace Complete
                     }
                     else
                     {
-                        m_TankAgent.AddReward(reward);
-                        otherAgent.AddReward(-reward * RewardRatio);
+                        m_TankAgent?.AddReward(reward);
+                        otherAgent?.AddReward(-reward * RewardRatio);
                     }
                 }
             }
