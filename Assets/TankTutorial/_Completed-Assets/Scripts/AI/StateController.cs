@@ -15,12 +15,12 @@ namespace Assets.TankTutorial.Scripts.AI
 
         [HideInInspector] public NavMeshAgent navMeshAgent;
         [HideInInspector] public Complete.TankShooting tankShooting;
-        [HideInInspector] public List<Transform> wayPointList;
+        public List<Transform> wayPointList;
         [HideInInspector] public int nextWayPoint;
         [HideInInspector] public Transform chaseTarget;
         [HideInInspector] public float stateTimeElapsed;
 
-        private bool aiActive;
+        public bool aiActive;
 
 
         void Awake()
@@ -29,10 +29,9 @@ namespace Assets.TankTutorial.Scripts.AI
             navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
-        public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
+        public void SetupAI()
         {
-            wayPointList = wayPointsFromTankManager;
-            aiActive = aiActivationFromTankManager;
+            aiActive = true;
             if (aiActive)
             {
                 navMeshAgent.enabled = true;
@@ -46,7 +45,7 @@ namespace Assets.TankTutorial.Scripts.AI
         void Update()
         {
             if (!aiActive)
-                return;
+                SetupAI();
             currentState.UpdateState(this);
         }
 

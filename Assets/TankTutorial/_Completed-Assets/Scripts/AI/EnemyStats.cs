@@ -2,7 +2,7 @@
 
 namespace Assets.TankTutorial.Scripts.AI
 {
-    [CreateAssetMenu(menuName = "PluggableAI/EnemyStats")]
+    [CreateAssetMenu(menuName = "PluggableAI/EnemyStats", order=51)]
     public class EnemyStats : ScriptableObject
     {
 
