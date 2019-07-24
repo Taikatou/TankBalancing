@@ -5,7 +5,7 @@ namespace Assets.TankTutorial.Scripts.AI
     [CreateAssetMenu(menuName = "PluggableAI/State")]
     public class State : ScriptableObject
     {
-
+        public string StateName;
         public Action[] actions;
         public Transition[] transitions;
         public Color sceneGizmoColor = Color.grey;
@@ -32,6 +32,7 @@ namespace Assets.TankTutorial.Scripts.AI
 
                 if (decisionSucceeded)
                 {
+                    Debug.Log("Decide transition change");
                     controller.TransitionToState(transitions[i].trueState);
                 }
                 else

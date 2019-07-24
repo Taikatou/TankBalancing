@@ -13,7 +13,7 @@ namespace Assets.TankTutorial.Scripts.AI.Decisions
 
         private bool Scan(StateController controller)
         {
-            controller.navMeshAgent.Stop();
+            controller.navMeshAgent.isStopped = true;
             controller.transform.Rotate(0, controller.enemyStats.searchingTurnSpeed * Time.deltaTime, 0);
             return controller.CheckIfCountDownElapsed(controller.enemyStats.searchDuration);
         }

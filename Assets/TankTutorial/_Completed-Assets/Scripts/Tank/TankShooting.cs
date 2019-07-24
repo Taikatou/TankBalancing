@@ -33,6 +33,8 @@ namespace Complete
 
         private bool allowSpawn = true;
 
+        public bool AllowSpawn => allowSpawn;
+
         private void OnEnable()
         {
             // When the tank is turned on, reset the launch force and the UI
@@ -142,25 +144,28 @@ namespace Complete
 
         public void Fire(float force, float attackRate)
         {
-            // Set the fired flag so only Fire is only called once.
-            m_Fired = true;
+            if (allowSpawn)
+            {
+                // Set the fired flag so only Fire is only called once.
+                m_Fired = true;
 
-            // Create an instance of the shell and store a reference to it's rigidbody.
-            Rigidbody shellInstance =
-                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+                // Create an instance of the shell and store a reference to it's rigidbody.
+                Rigidbody shellInstance =
+                    Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-            shellInstance.GetComponent<ShellExplosion>().m_TankAgent = GetComponent<TankAgent>();
+                shellInstance.GetComponent<ShellExplosion>().m_TankAgent = GetComponent<TankAgent>();
 
-            // Set the shell's velocity to the launch force in the fire position's forward direction.
-            shellInstance.velocity = force * m_FireTransform.forward;
+                // Set the shell's velocity to the launch force in the fire position's forward direction.
+                shellInstance.velocity = force * m_FireTransform.forward;
 
-            // Change the clip to the firing clip and play it.
-            m_ShootingAudio.clip = m_FireClip;
-            m_ShootingAudio.Play();
+                // Change the clip to the firing clip and play it.
+                m_ShootingAudio.clip = m_FireClip;
+                m_ShootingAudio.Play();
 
-            allowSpawn = false;
+                allowSpawn = false;
 
-            StartCoroutine(WaitFire(attackRate));
+                StartCoroutine(WaitFire(attackRate));
+            }
         }
 
         void Fire ()

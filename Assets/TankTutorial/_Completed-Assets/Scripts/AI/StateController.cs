@@ -63,6 +63,7 @@ namespace Assets.TankTutorial.Scripts.AI
             if (nextState != remainState)
             {
                 currentState = nextState;
+                Debug.Log("Transition to: " + currentState.StateName);
                 OnExitState();
             }
         }
