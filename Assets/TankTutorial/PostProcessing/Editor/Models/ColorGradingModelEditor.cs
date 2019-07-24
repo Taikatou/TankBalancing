@@ -3,7 +3,6 @@ using UnityEngine.PostProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Action = Assets.TankTutorial.Scripts.AI.Action;
 
 namespace UnityEditor.PostProcessing
 {

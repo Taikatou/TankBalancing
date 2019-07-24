@@ -3,7 +3,7 @@
 namespace Assets.TankTutorial.Scripts.AI.Actions
 {
     [CreateAssetMenu(menuName = "PluggableAI/Actions/Attack")]
-    public class AttackAction : Action
+    public class AttackAction : AIAction
     {
         public string TagName = "tank";
 

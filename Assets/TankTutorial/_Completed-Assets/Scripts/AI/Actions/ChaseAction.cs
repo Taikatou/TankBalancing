@@ -3,7 +3,7 @@
 namespace Assets.TankTutorial.Scripts.AI.Actions
 {
     [CreateAssetMenu(menuName = "PluggableAI/Actions/Chase")]
-    public class ChaseAction : Action
+    public class ChaseAction : AIAction
     {
         public override void Act(StateController controller)
         {

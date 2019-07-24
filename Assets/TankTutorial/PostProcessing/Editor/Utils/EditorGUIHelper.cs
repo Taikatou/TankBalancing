@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using UnityEngine.PostProcessing;
-using Action = Assets.TankTutorial.Scripts.AI.Action;
 
 namespace UnityEditor.PostProcessing
 {

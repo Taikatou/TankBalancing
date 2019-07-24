@@ -2,7 +2,7 @@
 
 namespace Assets.TankTutorial.Scripts.AI
 {
-    public abstract class Action : ScriptableObject
+    public abstract class AIAction : ScriptableObject
     {
         public abstract void Act(StateController controller);
     }

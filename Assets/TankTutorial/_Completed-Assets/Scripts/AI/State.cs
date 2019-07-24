@@ -6,7 +6,7 @@ namespace Assets.TankTutorial.Scripts.AI
     public class State : ScriptableObject
     {
         public string StateName;
-        public Action[] actions;
+        public AIAction[] actions;
         public Transition[] transitions;
         public Color sceneGizmoColor = Color.grey;
 

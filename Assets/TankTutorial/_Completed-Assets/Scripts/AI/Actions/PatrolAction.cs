@@ -3,7 +3,7 @@
 namespace Assets.TankTutorial.Scripts.AI.Actions
 {
     [CreateAssetMenu(menuName = "PluggableAI/Actions/Patrol")]
-    public class PatrolAction : Action
+    public class PatrolAction : AIAction
     {
         public override void Act(StateController controller)
         {
