@@ -2,7 +2,7 @@
 using MLAgents;
 using UnityEngine;
 
-public class TankHeuristicLogic : Decision
+public class TankDecision : Decision
 {
     public override float[] Decide(List<float> vectorObs, List<Texture2D> visualObs, float reward, bool done, List<float> memory)
     {
