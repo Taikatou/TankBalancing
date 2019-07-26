@@ -12,6 +12,11 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         private List<GameObject> _tanks;
 
+        public override void InitializeAcademy()
+        {
+            Monitor.SetActive(true);
+        }
+
         public void Spawn()
         {
             foreach(Transform child in spawnObjects)

@@ -8,32 +8,42 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
     public class TankAgent : Agent
     {
-        RayPerception rayPer;
-        TankMovement tankMovement;
-        TankShooting tankShooting;
-        Rigidbody m_Rigidbody;
+        private RayPerception _rayPer;
+        private TankMovement _tankMovement;
+        private TankShooting _tankShooting;
+        private Rigidbody _mRigidbody;
 
         public string Name;
 
-        public float ShotLimit = 0.05f;
+        public int rays = 8;
+
+        public int degrees = 180;
+
+        public float shotLimit = 0.05f;
 
         public override void InitializeAgent()
         {
             base.InitializeAgent();
-            rayPer = GetComponent<RayPerception>();
-            tankMovement = GetComponent<TankMovement>();
-            tankShooting = GetComponent<TankShooting>();
-            m_Rigidbody = GetComponent<Rigidbody>();
+            _rayPer = GetComponent<RayPerception>();
+            _tankMovement = GetComponent<TankMovement>();
+            _tankShooting = GetComponent<TankShooting>();
+            _mRigidbody = GetComponent<Rigidbody>();
         }
 
         public override void CollectObservations()
         {
             float rayDistance = 100f;
-            float[] rayAngles = { 0f, 45f, 90f, 135f, 180f, 110f, 70f, 225f, 270f, 315f};
+
+            float[] rayAngles = new float[rays];
+            for (var i = 0; i < rays; i++)
+            {
+                rayAngles[i] = i * (degrees / 8);
+            }
             var detectableObjects = new[] { "tank", "wall", "bullet" };
-            List<float> observations1 = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
-            AddVectorObs(m_Rigidbody.transform.rotation.y);
-            AddVectorObs(tankShooting.AllowSpawn);
+            List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+
+            AddVectorObs(_mRigidbody.transform.rotation.y);
+            AddVectorObs(_tankShooting.AllowSpawn);
             AddVectorObs(observations1);
         }
 
@@ -66,13 +76,13 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
             // Penalty given each step to encourage agent to finish task quickly.
 
-            tankMovement.UpdateAgent(moveForward, turn);
+            _tankMovement.UpdateAgent(moveForward, turn);
 
             bool shouldShoot = GetDecision(vectorAction[2]) == 1;
 
             if (shouldShoot)
             {
-                tankShooting.Fire(30.0f);
+                _tankShooting.Fire(30.0f);
             }
         }
 

@@ -82,6 +82,7 @@ namespace Complete
 
         private void OnDeath ()
         {
+            Debug.Log("Agent Dead");
             TankAgent t = GetComponent<TankAgent>();
             if (t)
             {
