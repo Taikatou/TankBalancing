@@ -7,7 +7,7 @@ namespace Complete
         public float m_DampTime = 0.2f;                 // Approximate time for the camera to refocus.
         public float m_ScreenEdgeBuffer = 4f;           // Space between the top/bottom most target and the screen edge.
         public float m_MinSize = 6.5f;                  // The smallest orthographic size the camera can be.
-        public Transform[] m_Targets; // All the targets the camera needs to encompass.
+        public GameObject[] m_Targets => GameObject.FindGameObjectsWithTag("tank"); // All the targets the camera needs to encompass.
 
 
         private Camera m_Camera;                        // Used for referencing the camera.
@@ -55,7 +55,7 @@ namespace Complete
                     continue;
 
                 // Add to the average and increment the number of targets in the average.
-                averagePos += m_Targets[i].position;
+                averagePos += m_Targets[i].transform.position;
                 numTargets++;
             }
 
@@ -95,7 +95,7 @@ namespace Complete
                     continue;
 
                 // Otherwise, find the position of the target in the camera's local space.
-                Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].position);
+                Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].transform.position);
 
                 // Find the position of the target from the desired position of the camera's local space.
                 Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;

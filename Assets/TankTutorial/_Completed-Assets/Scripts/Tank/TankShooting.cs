@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
+using Assets.TankTutorial.Scripts.MLAgentAI;
 
 namespace Complete
 {
@@ -27,7 +28,7 @@ namespace Complete
 
         public float LaunchForce => m_CurrentLaunchForce;
 
-        private bool PlayerEnabled = true;
+        private bool PlayerEnabled = false;
 
         public float fireRate = 0.7f;
 

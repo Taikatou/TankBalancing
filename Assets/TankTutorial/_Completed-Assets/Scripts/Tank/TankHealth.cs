@@ -1,4 +1,5 @@
-﻿using Assets.TankTutorial.Scripts.Tank;
+﻿using Assets.TankTutorial.Scripts.MLAgentAI;
+using Assets.TankTutorial.Scripts.Tank;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,8 +95,8 @@ namespace Complete
                 {
                     tank.Done();
                 }
-                TankSpawn spawn = GetComponent<TankSpawn>();
-                spawn?.Reset();
+                TankAcademy academy = FindObjectOfType<TankAcademy>();
+                academy?.AcademyReset();
             }
         }
     }
