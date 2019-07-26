@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.TankTutorial.Scripts.Tank;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Complete
@@ -81,8 +82,21 @@ namespace Complete
         private void OnDeath ()
         {
             TankAgent t = GetComponent<TankAgent>();
-            t.AddReward(-1);
-            t.Done();
+            if (t)
+            {
+                t.AddReward(-1);
+                t.Done();
+            }
+            else
+            {
+                TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
+                foreach (var tank in tanks)
+                {
+                    tank.Done();
+                }
+                TankSpawn spawn = GetComponent<TankSpawn>();
+                spawn?.Reset();
+            }
         }
     }
 }

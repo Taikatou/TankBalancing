@@ -38,8 +38,7 @@ namespace Complete
                 if (!targetRigidbody)
                     continue;
 
-                // Add an explosion force.
-                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
+                // targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
                 // Find the TankHealth script associated with the rigidbody.
                 TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
@@ -53,8 +52,7 @@ namespace Complete
                 TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
 
                 bool validAgents = otherAgent != null && m_TankAgent != null;
-                bool hitSelf = (otherAgent == m_TankAgent) && validAgents;
-                Debug.Log("hit self" + hitSelf);
+                bool hitSelf = otherAgent == m_TankAgent && validAgents;
                 if (damage > 0 && !hitSelf)
                 {
                     // Deal this damage to the tank.

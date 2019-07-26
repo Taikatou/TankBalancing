@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.TankTutorial.Scripts.Tank;
 using Complete;
 using MLAgents;
 using UnityEngine;
@@ -10,9 +11,9 @@ public class TankAgent : Agent
     TankShooting tankShooting;
     Rigidbody m_Rigidbody;
 
-    public Transform startPosition;
-
     public string Name;
+
+    public float ShotLimit = 0.05f;
 
     public override void InitializeAgent()
     {
@@ -30,7 +31,7 @@ public class TankAgent : Agent
         var detectableObjects = new[] { "tank", "wall", "bullet" };
         List<float> observations1 = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
         AddVectorObs(m_Rigidbody.transform.rotation.y);
-        AddVectorObs(tankShooting.LaunchForce);
+        AddVectorObs(tankShooting.AllowSpawn);
         AddVectorObs(observations1);
     }
 
@@ -65,15 +66,19 @@ public class TankAgent : Agent
 
         tankMovement.UpdateAgent(moveForward, turn);
 
-        tankShooting.UpdateAI(vectorAction[2]);
+        bool shouldShoot = GetDecision(vectorAction[2]) == 1;
+
+        if (shouldShoot)
+        {
+            Debug.Log("Fire");
+            tankShooting.Fire(30.0f);
+        }
     }
 
     public override void AgentReset()
     {
-        Rigidbody rBody = GetComponent<Rigidbody>();
-        rBody.MovePosition(startPosition.position);
-        TankHealth t = GetComponent<TankHealth>();
-        t.ResetHealth();
+        TankSpawn resetAgent = GetComponent<TankSpawn>();
+        resetAgent.Reset();
     }
 }
 

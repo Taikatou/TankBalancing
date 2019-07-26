@@ -35,6 +35,14 @@ namespace Complete
 
         public bool AllowSpawn => allowSpawn;
 
+        public float GetForce(float scale)
+        {
+            float force = m_MinLaunchForce;
+
+            force += (m_MaxLaunchForce - m_MinLaunchForce) * scale;
+            return force;
+        }
+
         private void OnEnable()
         {
             // When the tank is turned on, reset the launch force and the UI
@@ -140,6 +148,11 @@ namespace Complete
         {
             yield return new WaitForSeconds(wait);
             allowSpawn = true;
+        }
+
+        public void Fire(float force)
+        {
+            Fire(force, fireRate);
         }
 
         public void Fire(float force, float attackRate)
