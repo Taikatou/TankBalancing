@@ -1,8 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MLAgents;
 using UnityEngine;
 
-public class TankAcademy : Academy
+namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
+    public class TankAcademy : Academy
+    {
+        public bool RewardShots = false;
+
+        public override void InitializeAcademy()
+        {
+            Monitor.SetActive(true);
+        }
+    }
 }

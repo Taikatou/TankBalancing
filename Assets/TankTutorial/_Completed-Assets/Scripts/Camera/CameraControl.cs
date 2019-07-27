@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Assets.TankTutorial.Scripts.MLAgentAI;
+using UnityEngine;
 
 namespace Complete
 {
@@ -7,7 +9,28 @@ namespace Complete
         public float m_DampTime = 0.2f;                 // Approximate time for the camera to refocus.
         public float m_ScreenEdgeBuffer = 4f;           // Space between the top/bottom most target and the screen edge.
         public float m_MinSize = 6.5f;                  // The smallest orthographic size the camera can be.
-        public Transform[] m_Targets; // All the targets the camera needs to encompass.
+
+        public GameObject[] m_Targets
+        {
+            get
+            {
+                if (allTanks)
+                {
+                    return GameObject.FindGameObjectsWithTag("tank");
+                }
+                else
+                {
+                    List<GameObject> tanks = new List<GameObject>();
+                    if (tankAgent)
+                    {
+                        tanks.Add(tankAgent.gameObject);
+                        tanks.AddRange(tankAgent.Tanks);
+                    }
+
+                    return tanks.ToArray();
+                }
+            }
+        }
 
 
         private Camera m_Camera;                        // Used for referencing the camera.
@@ -15,6 +38,9 @@ namespace Complete
         private Vector3 m_MoveVelocity;                 // Reference velocity for the smooth damping of the position.
         private Vector3 m_DesiredPosition;              // The position the camera is moving towards.
 
+        public bool allTanks = false;
+
+        public TankAgent tankAgent;
 
         private void Awake ()
         {
@@ -50,13 +76,16 @@ namespace Complete
             // Go through all the targets and add their positions together.
             for (int i = 0; i < m_Targets.Length; i++)
             {
-                // If the target isn't active, go on to the next one.
-                if (!m_Targets[i].gameObject.activeSelf)
-                    continue;
+                if (m_Targets[i])
+                {
+                    // If the target isn't active, go on to the next one.
+                    if (!m_Targets[i].gameObject.activeSelf)
+                        continue;
 
-                // Add to the average and increment the number of targets in the average.
-                averagePos += m_Targets[i].position;
-                numTargets++;
+                    // Add to the average and increment the number of targets in the average.
+                    averagePos += m_Targets[i].transform.position;
+                    numTargets++;
+                }
             }
 
             // If there are targets divide the sum of the positions by the number of them to find the average.
@@ -91,20 +120,23 @@ namespace Complete
             for (int i = 0; i < m_Targets.Length; i++)
             {
                 // ... and if they aren't active continue on to the next target.
-                if (!m_Targets[i].gameObject.activeSelf)
-                    continue;
+                if (m_Targets[i])
+                {
+                    if (!m_Targets[i].gameObject.activeSelf)
+                        continue;
 
-                // Otherwise, find the position of the target in the camera's local space.
-                Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].position);
+                    // Otherwise, find the position of the target in the camera's local space.
+                    Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].transform.position);
 
-                // Find the position of the target from the desired position of the camera's local space.
-                Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;
+                    // Find the position of the target from the desired position of the camera's local space.
+                    Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;
 
-                // Choose the largest out of the current size and the distance of the tank 'up' or 'down' from the camera.
-                size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.y));
+                    // Choose the largest out of the current size and the distance of the tank 'up' or 'down' from the camera.
+                    size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.y));
 
-                // Choose the largest out of the current size and the calculated size based on the tank being to the left or right of the camera.
-                size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.x) / m_Camera.aspect);
+                    // Choose the largest out of the current size and the calculated size based on the tank being to the left or right of the camera.
+                    size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.x) / m_Camera.aspect);
+                }
             }
 
             // Add the edge buffer to the size.

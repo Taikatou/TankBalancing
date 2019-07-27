@@ -32,7 +32,6 @@ namespace Assets.TankTutorial.Scripts.AI
 
                 if (decisionSucceeded)
                 {
-                    Debug.Log("Decide transition change");
                     controller.TransitionToState(transitions[i].trueState);
                 }
                 else

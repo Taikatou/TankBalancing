@@ -1,9 +1,10 @@
 using System.Collections;
+using Complete;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Complete
+namespace Assets.TankTutorial.Scripts.Managers
 {
     public class GameManager : MonoBehaviour
     {
@@ -64,7 +65,7 @@ namespace Complete
             }
 
             // These are the targets the camera should follow.
-            m_CameraControl.m_Targets = targets;
+            //m_CameraControl.m_Targets = targets;
         }
 
 

@@ -1,79 +1,128 @@
 ﻿using System.Collections.Generic;
+using Assets.TankTutorial.Scripts.Tank;
 using Complete;
 using MLAgents;
 using UnityEngine;
 
-public class TankAgent : Agent
+namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
-    RayPerception rayPer;
-    TankMovement tankMovement;
-    TankShooting tankShooting;
-    Rigidbody m_Rigidbody;
-
-    public Transform startPosition;
-
-    public string Name;
-
-    public override void InitializeAgent()
+    public class TankAgent : Agent
     {
-        base.InitializeAgent();
-        rayPer = GetComponent<RayPerception>();
-        tankMovement = GetComponent<TankMovement>();
-        tankShooting = GetComponent<TankShooting>();
-        m_Rigidbody = GetComponent<Rigidbody>();
-    }
+        private RayPerception _rayPer;
+        private TankMovement _tankMovement;
+        private TankShooting _tankShooting;
+        private Rigidbody _mRigidbody;
 
-    public override void CollectObservations()
-    {
-        float rayDistance = 100f;
-        float[] rayAngles = { 0f, 45f, 90f, 135f, 180f, 110f, 70f, 225f, 270f, 315f};
-        var detectableObjects = new[] { "tank", "wall", "bullet" };
-        List<float> observations1 = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
-        AddVectorObs(m_Rigidbody.transform.rotation.y);
-        AddVectorObs(tankShooting.LaunchForce);
-        AddVectorObs(observations1);
-    }
+        public string Name;
 
-    /// <summary>
-    /// Called every step of the engine. Here the agent takes an action.
-    /// </summary>
-    ///
-    private int GetDecision(float input)
-    {
-        int action = Mathf.FloorToInt(input);
+        public int rays = 8;
 
-        int output = 0;
-        switch (input)
+        public int degrees = 360;
+
+        public Transform spawnObjects;
+
+        public GameObject spawnType;
+
+        private List<GameObject> _tanks;
+
+        public List<GameObject> Tanks => _tanks;
+
+        public override void InitializeAgent()
         {
-            case 1:
-                output = 1;
-                break;
-            case 2:
-                output = -1;
-                break;
+            base.InitializeAgent();
+            _rayPer = GetComponent<RayPerception>();
+            _tankMovement = GetComponent<TankMovement>();
+            _tankShooting = GetComponent<TankShooting>();
+            _mRigidbody = GetComponent<Rigidbody>();
+
+            _tanks = new List<GameObject>();
         }
-        return output;
-    }
 
-    public override void AgentAction(float[] vectorAction, string textAction)
-    {
-        float moveForward = GetDecision(vectorAction[0]);
+        public override void CollectObservations()
+        {
+            float rayDistance = 100f;
 
-        float turn = GetDecision(vectorAction[1]);
+            float[] rayAngles = new float[rays];
+            for (var i = 0; i < rays; i++)
+            {
+                rayAngles[i] = i * (degrees / rays);
+            }
+            var detectableObjects = new[] { "tank", "wall", "bullet" };
+            
 
-        // Penalty given each step to encourage agent to finish task quickly.
+            AddVectorObs(_mRigidbody.transform.position);
+            AddVectorObs(_mRigidbody.transform.rotation.y);
+            AddVectorObs(_tankShooting.AllowSpawn);
 
-        tankMovement.UpdateAgent(moveForward, turn);
+            List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+            AddVectorObs(observations1);
+        }
 
-        tankShooting.UpdateAI(vectorAction[2]);
-    }
+        /// <summary>
+        /// Called every step of the engine. Here the agent takes an action.
+        /// </summary>
+        ///
+        private int GetDecision(float input)
+        {
+            int action = Mathf.FloorToInt(input);
 
-    public override void AgentReset()
-    {
-        Rigidbody rBody = GetComponent<Rigidbody>();
-        rBody.MovePosition(startPosition.position);
-        TankHealth t = GetComponent<TankHealth>();
-        t.ResetHealth();
+            int output = 0;
+            switch (input)
+            {
+                case 1:
+                    output = 1;
+                    break;
+                case 2:
+                    output = -1;
+                    break;
+            }
+            return output;
+        }
+
+        public override void AgentAction(float[] vectorAction, string textAction)
+        {
+            float moveForward = GetDecision(vectorAction[0]);
+
+            float turn = GetDecision(vectorAction[1]);
+
+            // Penalty given each step to encourage agent to finish task quickly.
+
+            _tankMovement.UpdateAgent(moveForward, turn);
+
+            bool shouldShoot = GetDecision(vectorAction[2]) == 1;
+
+            if (shouldShoot)
+            {
+                _tankShooting.Fire(30.0f);
+            }
+
+            float timePunishment = -1f / agentParameters.maxStep;
+
+            Debug.Log(timePunishment);
+            // Penalty given each step to encourage agent to finish task quickly.
+            AddReward(timePunishment);
+        }
+
+        public override void AgentReset()
+        {
+            TankSpawn resetAgent = GetComponent<TankSpawn>();
+            resetAgent.Reset();
+
+            Spawn();
+        }
+
+        public void Spawn()
+        {
+            foreach (GameObject tank in _tanks)
+            {
+                Destroy(tank);
+            }
+            foreach (Transform child in spawnObjects)
+            {
+                GameObject tank = Instantiate(spawnType, child.position, child.rotation);
+                _tanks.Add(tank);
+            }
+        }
     }
 }
 

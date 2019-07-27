@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Assets.TankTutorial.Scripts.MLAgentAI;
+using Assets.TankTutorial.Scripts.Tank;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Complete
@@ -18,6 +20,7 @@ namespace Complete
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
 
+        public float CurrentHealth => m_CurrentHealth;
 
         private void Awake ()
         {
@@ -80,9 +83,22 @@ namespace Complete
 
         private void OnDeath ()
         {
+            Debug.Log("Agent Dead");
             TankAgent t = GetComponent<TankAgent>();
-            t.AddReward(-1);
-            t.Done();
+            if (t)
+            {
+                t.AddReward(-1);
+                t.Done();
+            }
+            else
+            {
+                TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
+                foreach (var tank in tanks)
+                {
+                    tank.Done();
+                }
+                TankAcademy academy = FindObjectOfType<TankAcademy>();
+            }
         }
     }
 }

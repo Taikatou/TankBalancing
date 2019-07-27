@@ -13,8 +13,7 @@ namespace Complete
 		public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
 
         private Rigidbody m_Rigidbody;              // Reference used to move the tank.
-        private float m_MovementInputValue;         // The current value of the movement input.
-        private float m_TurnInputValue;             // The current value of the turn input.
+
         private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
         private ParticleSystem[] m_particleSystems; // References to all the particles systems used by the Tanks
 
@@ -36,10 +35,6 @@ namespace Complete
         {
             // When the tank is turned on, make sure it's not kinematic.
             m_Rigidbody.isKinematic = false;
-
-            // Also reset the input values.
-            m_MovementInputValue = 0f;
-            m_TurnInputValue = 0f;
 
             // We grab all the Particle systems child of that Tank to be able to Stop/Play them on Deactivate/Activate
             // It is needed because we move the Tank when spawning it, and if the Particle System is playing while we do that

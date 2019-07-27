@@ -18,11 +18,9 @@ namespace Assets.TankTutorial.Scripts.AI.Actions
             RaycastHit hit;
 
             Debug.DrawRay(controller.eyes.position, controller.eyes.forward.normalized * controller.enemyStats.attackRange, Color.red);
-            Debug.Log("Draw");
             if (Physics.SphereCast(controller.eyes.position, controller.enemyStats.lookSphereCastRadius, controller.eyes.forward, out hit, controller.enemyStats.attackRange)
                 && hit.collider.CompareTag(TagName))
             {
-                Debug.Log("Contains Tag");
                 controller.tankShooting.Fire(controller.enemyStats.attackForce, controller.enemyStats.attackRate);
             }
         }

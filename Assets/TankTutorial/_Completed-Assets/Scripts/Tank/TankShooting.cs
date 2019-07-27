@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
+using Assets.TankTutorial.Scripts.MLAgentAI;
 
 namespace Complete
 {
@@ -27,13 +28,21 @@ namespace Complete
 
         public float LaunchForce => m_CurrentLaunchForce;
 
-        private bool PlayerEnabled = true;
+        private bool PlayerEnabled = false;
 
         public float fireRate = 0.7f;
 
         private bool allowSpawn = true;
 
         public bool AllowSpawn => allowSpawn;
+
+        public float GetForce(float scale)
+        {
+            float force = m_MinLaunchForce;
+
+            force += (m_MaxLaunchForce - m_MinLaunchForce) * scale;
+            return force;
+        }
 
         private void OnEnable()
         {
@@ -142,6 +151,11 @@ namespace Complete
             allowSpawn = true;
         }
 
+        public void Fire(float force)
+        {
+            Fire(force, fireRate);
+        }
+
         public void Fire(float force, float attackRate)
         {
             if (allowSpawn)
@@ -153,7 +167,7 @@ namespace Complete
                 Rigidbody shellInstance =
                     Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-                shellInstance.GetComponent<ShellExplosion>().m_TankAgent = GetComponent<TankAgent>();
+                shellInstance.GetComponent<ShellExplosion>().mTankAgent = GetComponent<TankAgent>();
 
                 // Set the shell's velocity to the launch force in the fire position's forward direction.
                 shellInstance.velocity = force * m_FireTransform.forward;

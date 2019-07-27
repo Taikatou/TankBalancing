@@ -1,3 +1,4 @@
+using Assets.TankTutorial.Scripts.MLAgentAI;
 using UnityEngine;
 
 namespace Complete
@@ -12,9 +13,9 @@ namespace Complete
         public float m_MaxLifeTime = 2f;                    // The time in seconds before the shell is removed.
         public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
 
-        public TankAgent m_TankAgent;
+        public TankAgent mTankAgent;
 
-        public float RewardRatio = 0.5f;
+        public float rewardRatio = 0.5f;
 
         private void Start ()
         {
@@ -38,8 +39,7 @@ namespace Complete
                 if (!targetRigidbody)
                     continue;
 
-                // Add an explosion force.
-                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
+                // targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
                 // Find the TankHealth script associated with the rigidbody.
                 TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
@@ -52,19 +52,18 @@ namespace Complete
 
                 TankAgent otherAgent = targetHealth.GetComponent<TankAgent>();
 
-                bool validAgents = otherAgent != null && m_TankAgent != null;
-                bool hitSelf = (otherAgent == m_TankAgent) && validAgents;
-                Debug.Log("hit self" + hitSelf);
+                bool validAgents = otherAgent != null && mTankAgent != null;
+                bool hitSelf = otherAgent == mTankAgent && validAgents;
                 if (damage > 0 && !hitSelf)
                 {
                     // Deal this damage to the tank.
                     bool dead = targetHealth.TakeDamage(damage);
 
                     float reward = damage / m_MaxDamage;
-
+                    TankAcademy academy = FindObjectOfType<TankAcademy>();
                     if (dead)
                     {
-                        m_TankAgent?.AddReward(1.0f);
+                        mTankAgent?.AddReward(1.0f);
                         otherAgent?.AddReward(-1.0f);
 
                         TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
@@ -73,10 +72,10 @@ namespace Complete
                             tank.Done();
                         }
                     }
-                    else
+                    else if (academy.RewardShots)
                     {
-                        m_TankAgent?.AddReward(reward);
-                        otherAgent?.AddReward(-reward * RewardRatio);
+                        mTankAgent?.AddReward(reward);
+                        otherAgent?.AddReward(-reward * rewardRatio);
                     }
                 }
             }
