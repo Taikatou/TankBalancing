@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Assets.TankTutorial.Scripts.MLAgentAI;
+using UnityEngine;
 
 namespace Complete
 {
@@ -7,7 +9,23 @@ namespace Complete
         public float m_DampTime = 0.2f;                 // Approximate time for the camera to refocus.
         public float m_ScreenEdgeBuffer = 4f;           // Space between the top/bottom most target and the screen edge.
         public float m_MinSize = 6.5f;                  // The smallest orthographic size the camera can be.
-        public GameObject[] m_Targets => GameObject.FindGameObjectsWithTag("tank"); // All the targets the camera needs to encompass.
+
+        public GameObject[] m_Targets
+        {
+            get
+            {
+                if (allTanks)
+                {
+                    return GameObject.FindGameObjectsWithTag("tank");
+                }
+                else
+                {
+                    List<GameObject> tanks = tankAgent.Tanks;
+                    tanks.Add(tankAgent.gameObject);
+                    return tanks.ToArray();
+                }
+            }
+        }
 
 
         private Camera m_Camera;                        // Used for referencing the camera.
@@ -15,6 +33,9 @@ namespace Complete
         private Vector3 m_MoveVelocity;                 // Reference velocity for the smooth damping of the position.
         private Vector3 m_DesiredPosition;              // The position the camera is moving towards.
 
+        public bool allTanks = false;
+
+        public TankAgent tankAgent;
 
         private void Awake ()
         {

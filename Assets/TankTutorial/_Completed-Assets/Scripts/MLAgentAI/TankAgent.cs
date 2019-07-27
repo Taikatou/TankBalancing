@@ -21,6 +21,14 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public float shotLimit = 0.05f;
 
+        public Transform spawnObjects;
+
+        public GameObject spawnType;
+
+        private List<GameObject> _tanks;
+
+        public List<GameObject> Tanks => _tanks;
+
         public override void InitializeAgent()
         {
             base.InitializeAgent();
@@ -28,6 +36,8 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             _tankMovement = GetComponent<TankMovement>();
             _tankShooting = GetComponent<TankShooting>();
             _mRigidbody = GetComponent<Rigidbody>();
+
+            _tanks = new List<GameObject>();
         }
 
         public override void CollectObservations()
@@ -40,11 +50,19 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
                 rayAngles[i] = i * (degrees / 8);
             }
             var detectableObjects = new[] { "tank", "wall", "bullet" };
-            List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+            
+            //List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+            //AddVectorObs(observations1);
 
+            AddVectorObs(_mRigidbody.transform.position);
             AddVectorObs(_mRigidbody.transform.rotation.y);
             AddVectorObs(_tankShooting.AllowSpawn);
-            AddVectorObs(observations1);
+            foreach (var tank in Tanks)
+            {
+                AddVectorObs(tank.transform.position);
+                TankHealth health = tank.GetComponentInChildren<TankHealth>();
+                AddVectorObs(health.CurrentHealth);
+            }
         }
 
         /// <summary>
@@ -90,6 +108,21 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
         {
             TankSpawn resetAgent = GetComponent<TankSpawn>();
             resetAgent.Reset();
+
+            Spawn();
+        }
+
+        public void Spawn()
+        {
+            foreach (GameObject tank in _tanks)
+            {
+                Destroy(tank);
+            }
+            foreach (Transform child in spawnObjects)
+            {
+                GameObject tank = Instantiate(spawnType, child.position, child.rotation);
+                _tanks.Add(tank);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Complete
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
 
+        public float CurrentHealth => m_CurrentHealth;
 
         private void Awake ()
         {
@@ -97,7 +98,6 @@ namespace Complete
                     tank.Done();
                 }
                 TankAcademy academy = FindObjectOfType<TankAcademy>();
-                academy?.AcademyReset();
             }
         }
     }
