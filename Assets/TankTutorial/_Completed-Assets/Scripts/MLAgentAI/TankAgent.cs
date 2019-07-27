@@ -17,9 +17,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public int rays = 8;
 
-        public int degrees = 180;
-
-        public float shotLimit = 0.05f;
+        public int degrees = 360;
 
         public Transform spawnObjects;
 
@@ -47,22 +45,17 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             float[] rayAngles = new float[rays];
             for (var i = 0; i < rays; i++)
             {
-                rayAngles[i] = i * (degrees / 8);
+                rayAngles[i] = i * (degrees / rays);
             }
             var detectableObjects = new[] { "tank", "wall", "bullet" };
             
-            //List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
-            //AddVectorObs(observations1);
 
             AddVectorObs(_mRigidbody.transform.position);
             AddVectorObs(_mRigidbody.transform.rotation.y);
             AddVectorObs(_tankShooting.AllowSpawn);
-            foreach (var tank in Tanks)
-            {
-                AddVectorObs(tank.transform.position);
-                TankHealth health = tank.GetComponentInChildren<TankHealth>();
-                AddVectorObs(health.CurrentHealth);
-            }
+
+            List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
+            AddVectorObs(observations1);
         }
 
         /// <summary>
@@ -102,6 +95,12 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             {
                 _tankShooting.Fire(30.0f);
             }
+
+            float timePunishment = -1f / agentParameters.maxStep;
+
+            Debug.Log(timePunishment);
+            // Penalty given each step to encourage agent to finish task quickly.
+            AddReward(timePunishment);
         }
 
         public override void AgentReset()
