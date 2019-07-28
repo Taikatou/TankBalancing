@@ -126,9 +126,24 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             Spawn();
         }
 
+        private int SpawnIndex()
+        {
+            bool useRandom = false;
+            if(useRandom)
+            {
+                int index = Random.Range(0, _config) % spawnTypes.Count;
+                return index;
+            }
+            else
+            {
+                int index = 1;
+                return index;
+            }
+        }
+
         public GameObject GetSpawnTye()
         {
-            int index = Random.Range(0, _config) % spawnTypes.Count;
+            int index = SpawnIndex();
             return spawnTypes[index];
         }
 
@@ -141,7 +156,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             foreach (Transform child in spawnObjects)
             {
                 GameObject tank = Instantiate(GetSpawnTye(), child.position, child.rotation);
-                StateController sController = tank.GetComponent<StateController>();
+                StateController sController = tank.GetComponentInChildren<StateController>();
                 if(sController)
                 {
                     sController.WayPointList = WayPointList;

@@ -96,9 +96,12 @@ namespace Complete
             ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
             Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
 
-            TankShooting shooting = mTankAgent.GetComponent<TankShooting>();
-            shooting?.CallbackDestroy(GetComponent<Rigidbody>());
-
+            if(mTankAgent)
+            {
+                TankShooting shooting = mTankAgent.GetComponent<TankShooting>();
+                shooting?.CallbackDestroy(GetComponent<Rigidbody>());
+            }
+            
             // Destroy the shell.
             Destroy (gameObject);
 
