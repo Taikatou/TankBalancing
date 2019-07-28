@@ -2,10 +2,10 @@
 using Assets.TankTutorial.Scripts.Tank;
 using Complete;
 using MLAgents;
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Collections;
 using UnityEngine;
-using Random = System.Random;
+using Assets.TankTutorial.Scripts.AI;
 
 namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
@@ -32,6 +32,11 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public List<GameObject> Tanks => _tanks;
 
+        // Depending on this value, the ai's spawned will have different AI
+        private int _config;
+
+        public List<Transform> WayPointList;
+
         public override void InitializeAgent()
         {
             base.InitializeAgent();
@@ -41,6 +46,8 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             _mRigidbody = GetComponent<Rigidbody>();
 
             _tanks = new List<GameObject>();
+
+            _config = Random.Range(0, 3);
         }
 
         public override void CollectObservations()
@@ -121,8 +128,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public GameObject GetSpawnTye()
         {
-            Random random = new Random();
-            int index = random.Next(spawnTypes.Count);
+            int index = Random.Range(0, _config) % spawnTypes.Count;
             return spawnTypes[index];
         }
 
@@ -135,6 +141,11 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             foreach (Transform child in spawnObjects)
             {
                 GameObject tank = Instantiate(GetSpawnTye(), child.position, child.rotation);
+                StateController sController = tank.GetComponent<StateController>();
+                if(sController)
+                {
+                    sController.WayPointList = WayPointList;
+                }
                 _tanks.Add(tank);
             }
         }

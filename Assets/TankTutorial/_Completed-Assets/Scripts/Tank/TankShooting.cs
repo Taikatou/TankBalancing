@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 using System.Collections;
 using Assets.TankTutorial.Scripts.MLAgentAI;
 using System.Collections.Generic;

@@ -10,11 +10,6 @@ public class TankDecision : Decision
 
         float force = vectorObs[1];
 
-        for (int index = 2; index < vectorObs.Count; index++)
-        {
-            
-        }
-
         float[] decisions = {1.0f, 1.0f, 1.0f};
         return decisions;
     }

@@ -15,13 +15,13 @@ namespace Assets.TankTutorial.Scripts.AI
 
         [HideInInspector] public NavMeshAgent navMeshAgent;
         [HideInInspector] public Complete.TankShooting tankShooting;
-        public List<Transform> wayPointList;
         [HideInInspector] public int nextWayPoint;
         [HideInInspector] public Transform chaseTarget;
         [HideInInspector] public float stateTimeElapsed;
 
         public bool aiActive;
 
+        [HideInInspector] public List<Transform> WayPointList;
 
         void Awake()
         {
