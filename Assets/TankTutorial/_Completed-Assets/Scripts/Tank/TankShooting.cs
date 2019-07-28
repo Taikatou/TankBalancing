@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
 using Assets.TankTutorial.Scripts.MLAgentAI;
+using System.Collections.Generic;
 
 namespace Complete
 {
@@ -25,6 +26,8 @@ namespace Complete
         private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
         private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
         private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
+
+        private List<Rigidbody> _shells;
 
         public float LaunchForce => m_CurrentLaunchForce;
 
@@ -59,6 +62,8 @@ namespace Complete
 
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+
+            _shells = new List<Rigidbody>();
         }
 
         private void Update()
@@ -139,7 +144,6 @@ namespace Complete
                 // Otherwise, if the fire button is released and the shell hasn't been launched yet...
                 else if (up && !m_Fired)
                 {
-                    // ... launch the shell.
                     Fire();
                 }
             }
@@ -167,7 +171,8 @@ namespace Complete
                 Rigidbody shellInstance =
                     Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-                shellInstance.GetComponent<ShellExplosion>().mTankAgent = GetComponent<TankAgent>();
+                ShellExplosion shellExplosion = shellInstance.GetComponent<ShellExplosion>();
+                shellExplosion.mTankAgent = GetComponent<TankAgent>();
 
                 // Set the shell's velocity to the launch force in the fire position's forward direction.
                 shellInstance.velocity = force * m_FireTransform.forward;
@@ -178,8 +183,27 @@ namespace Complete
 
                 allowSpawn = false;
 
+
+                _shells.Add(shellInstance);
+
+
                 StartCoroutine(WaitFire(attackRate));
             }
+        }
+
+        public void Reset()
+        {
+            foreach(var shell in _shells)
+            {
+                if(shell)
+                {
+                    if (shell.gameObject.activeSelf)
+                    {
+                        Destroy(shell.gameObject);
+                    }
+                }
+            }
+            _shells.Clear();
         }
 
         void Fire ()
@@ -187,6 +211,11 @@ namespace Complete
             Fire(m_CurrentLaunchForce, fireRate);
             // Reset the launch force.  This is a precaution in case of missing button events.
             m_CurrentLaunchForce = m_MinLaunchForce;
+        }
+
+        public void CallbackDestroy(Rigidbody shell)
+        {
+            _shells?.Remove(shell);
         }
     }
 }

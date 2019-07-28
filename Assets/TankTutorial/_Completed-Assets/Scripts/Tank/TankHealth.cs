@@ -46,7 +46,7 @@ namespace Complete
         }
 
         // returns death
-        public bool TakeDamage (float amount)
+        public bool TakeDamage (float amount, TankAgent otherAgent)
         {
             // Reduce current health by the amount of damage done.
             m_CurrentHealth -= amount;
@@ -57,7 +57,7 @@ namespace Complete
             // If the current health is at or below zero and it has not yet been registered, call OnDeath.
             if (m_CurrentHealth <= 0f && !m_Dead)
             {
-                OnDeath ();
+                OnDeath (otherAgent);
                 return true;
             }
 
@@ -81,22 +81,18 @@ namespace Complete
         }
 
 
-        private void OnDeath ()
+        private void OnDeath (TankAgent otherAgent)
         {
-            Debug.Log("Agent Dead");
             TankAgent t = GetComponent<TankAgent>();
             if (t)
             {
                 t.AddReward(-1);
                 t.Done();
             }
-            else
+            else if (otherAgent)
             {
-                TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
-                foreach (var tank in tanks)
-                {
-                    tank.Done();
-                }
+                otherAgent.AddReward(1);
+                otherAgent.Done();
             }
         }
     }

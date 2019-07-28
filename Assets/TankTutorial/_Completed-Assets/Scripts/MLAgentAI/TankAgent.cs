@@ -103,7 +103,6 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             if (RewardTime)
             {
                 float timePunishment = -1f / agentParameters.maxStep;
-                Debug.Log(agentParameters.maxStep);
                 // Penalty given each step to encourage agent to finish task quickly.
                 AddReward(timePunishment);
             }
@@ -112,7 +111,10 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
         public override void AgentReset()
         {
             TankSpawn resetAgent = GetComponent<TankSpawn>();
-            resetAgent.Reset();
+            resetAgent?.Reset();
+
+            TankShooting tankShooting = GetComponent<TankShooting>();
+            tankShooting?.Reset();
 
             Spawn();
         }

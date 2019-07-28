@@ -275,6 +275,9 @@ ChameleonLearning:
     time_horizon: 128
 
 TankLearning:
+    use_curiosity: true
+    curiosity_strength: 0.01
+    curiosity_enc_size: 256
     max_steps: 5.0e4
     batch_size: 128
     buffer_size: 2048

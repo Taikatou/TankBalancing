@@ -57,7 +57,7 @@ namespace Complete
                 if (damage > 0 && !hitSelf)
                 {
                     // Deal this damage to the tank.
-                    bool dead = targetHealth.TakeDamage(damage);
+                    bool dead = targetHealth.TakeDamage(damage, mTankAgent);
 
                     float reward = damage / m_MaxDamage;
                     TankAcademy academy = FindObjectOfType<TankAcademy>();
@@ -86,15 +86,22 @@ namespace Complete
             // Play the particle system.
             m_ExplosionParticles.Play();
 
-            // Play the explosion sound effect.
-            m_ExplosionAudio.Play();
+            if (m_ExplosionAudio.enabled)
+            {
+                // Play the explosion sound effect.
+                m_ExplosionAudio.Play();
+            }
 
             // Once the particles have finished, destroy the gameobject they are on.
             ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
             Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
 
+            TankShooting shooting = mTankAgent.GetComponent<TankShooting>();
+            shooting?.CallbackDestroy(GetComponent<Rigidbody>());
+
             // Destroy the shell.
             Destroy (gameObject);
+
         }
 
 
