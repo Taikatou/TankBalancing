@@ -97,7 +97,6 @@ namespace Complete
                 {
                     tank.Done();
                 }
-                TankAcademy academy = FindObjectOfType<TankAcademy>();
             }
         }
     }

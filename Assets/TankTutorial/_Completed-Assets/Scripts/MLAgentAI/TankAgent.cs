@@ -2,7 +2,10 @@
 using Assets.TankTutorial.Scripts.Tank;
 using Complete;
 using MLAgents;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
@@ -21,7 +24,9 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public Transform spawnObjects;
 
-        public GameObject spawnType;
+        public List<GameObject> spawnTypes;
+
+        public bool RewardTime = false;
 
         private List<GameObject> _tanks;
 
@@ -95,12 +100,13 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             {
                 _tankShooting.Fire(30.0f);
             }
-
-            float timePunishment = -1f / agentParameters.maxStep;
-
-            Debug.Log(timePunishment);
-            // Penalty given each step to encourage agent to finish task quickly.
-            AddReward(timePunishment);
+            if (RewardTime)
+            {
+                float timePunishment = -1f / agentParameters.maxStep;
+                Debug.Log(agentParameters.maxStep);
+                // Penalty given each step to encourage agent to finish task quickly.
+                AddReward(timePunishment);
+            }
         }
 
         public override void AgentReset()
@@ -111,6 +117,13 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             Spawn();
         }
 
+        public GameObject GetSpawnTye()
+        {
+            Random random = new Random();
+            int index = random.Next(spawnTypes.Count);
+            return spawnTypes[index];
+        }
+
         public void Spawn()
         {
             foreach (GameObject tank in _tanks)
@@ -119,7 +132,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             }
             foreach (Transform child in spawnObjects)
             {
-                GameObject tank = Instantiate(spawnType, child.position, child.rotation);
+                GameObject tank = Instantiate(GetSpawnTye(), child.position, child.rotation);
                 _tanks.Add(tank);
             }
         }

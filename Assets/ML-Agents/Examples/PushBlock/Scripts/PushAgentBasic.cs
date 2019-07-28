@@ -183,6 +183,8 @@ public class PushAgentBasic : Agent
 
         // Penalty given each step to encourage agent to finish task quickly.
         AddReward(-1f / agentParameters.maxStep);
+
+        Debug.Log(agentParameters.maxStep);
     }
 
     /// <summary>
