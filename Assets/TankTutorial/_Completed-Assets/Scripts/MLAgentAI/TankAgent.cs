@@ -105,7 +105,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
             if (shouldShoot)
             {
-                _tankShooting.Fire(30.0f);
+                _tankShooting.Fire(35.0f);
             }
             if (RewardTime)
             {

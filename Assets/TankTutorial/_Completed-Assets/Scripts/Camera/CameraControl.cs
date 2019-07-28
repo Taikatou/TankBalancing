@@ -16,7 +16,7 @@ namespace Complete
             {
                 if (allTanks)
                 {
-                    return GameObject.FindGameObjectsWithTag("tank");
+                    return GameObject.FindGameObjectsWithTag("tankPlayer");
                 }
                 else
                 {
