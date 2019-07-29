@@ -276,13 +276,14 @@ ChameleonLearning:
 
 TankLearning:
     use_curiosity: true
+    summary_freq: 2000
     curiosity_strength: 0.01
     curiosity_enc_size: 256
-    max_steps: 5.0e4
+    time_horizon: 128
     batch_size: 128
     buffer_size: 2048
-    beta: 1.0e-2
-    hidden_units: 256
-    summary_freq: 2000
-    time_horizon: 64
+    hidden_units: 512
     num_layers: 2
+    beta: 1.0e-2
+    max_steps: 5.0e5
+    num_epoch: 3

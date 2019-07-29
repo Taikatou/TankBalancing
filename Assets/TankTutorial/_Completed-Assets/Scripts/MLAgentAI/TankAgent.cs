@@ -52,22 +52,20 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void CollectObservations()
         {
-            float rayDistance = 100f;
+            var detectableObjects = new[] { "tank", "wall" };
 
-            float[] rayAngles = new float[rays];
-            for (var i = 0; i < rays; i++)
-            {
-                rayAngles[i] = i * (degrees / rays);
-            }
-            var detectableObjects = new[] { "tank", "wall", };
-            
+            const float rayDistance = 35f;
+            float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
+            float[] rayAngles1 = { 25f, 95f, 165f, 50f, 140f, 75f, 115f };
+            float[] rayAngles2 = { 15f, 85f, 155f, 40f, 130f, 65f, 105f };
 
-            AddVectorObs(_mRigidbody.transform.position);
-            AddVectorObs(_mRigidbody.transform.rotation.y);
             AddVectorObs(_tankShooting.AllowSpawn);
 
-            List<float> observations1 = _rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 1f, 0f);
-            AddVectorObs(observations1);
+            AddVectorObs(transform.InverseTransformDirection(_mRigidbody.velocity));
+
+            AddVectorObs(_rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
+            AddVectorObs(_rayPer.Perceive(rayDistance, rayAngles1, detectableObjects, 0f, 5f));
+            AddVectorObs(_rayPer.Perceive(rayDistance, rayAngles2, detectableObjects, 0f, 10f));
         }
 
         /// <summary>
