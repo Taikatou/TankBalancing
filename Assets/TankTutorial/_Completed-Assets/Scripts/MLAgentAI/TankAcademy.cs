@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using MLAgents;
+﻿using MLAgents;
 using UnityEngine;
+using System.Collections;
 
 namespace Assets.TankTutorial.Scripts.MLAgentAI
 {
@@ -10,7 +10,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public bool Respawn = false;
 
-        public bool Random = false;
+        public bool RandomAI = false;
 
         private int _spawnType = 0;
 
@@ -19,9 +19,9 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
         public override void InitializeAcademy()
         {
             Monitor.SetActive(true);
-            if (Random)
+            if (RandomAI)
             {
-                _spawnType = 1;
+                _spawnType = Random.Range(0, 3);
             }
         }
     }

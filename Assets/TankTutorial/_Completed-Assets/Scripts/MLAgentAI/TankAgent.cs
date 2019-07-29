@@ -32,10 +32,9 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public List<GameObject> Tanks => _tanks;
 
-        // Depending on this value, the ai's spawned will have different AI
-        private int _config;
-
         public List<Transform> WayPointList;
+
+        private bool _firstReset = false;
 
         public override void InitializeAgent()
         {
@@ -46,8 +45,6 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             _mRigidbody = GetComponent<Rigidbody>();
 
             _tanks = new List<GameObject>();
-
-            _config = Random.Range(0, 3);
         }
 
         public override void CollectObservations()
@@ -91,7 +88,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void AgentAction(float[] vectorAction, string textAction)
         {
-            bool AllDead = Tanks.Count > 0;
+            bool allDead = Tanks.Count > 0;
             foreach(var tank in Tanks)
             {
                 TankHealth health = tank.GetComponentInChildren<TankHealth>();
@@ -99,11 +96,11 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
                 {
                     if (health.CurrentHealth > 0.0f)
                     {
-                        AllDead = false;
+                        allDead = false;
                     }
                 }
             }
-            if(AllDead)
+            if(allDead)
             {
                 AddReward(1.0f);
                 Done();
@@ -134,6 +131,15 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void AgentReset()
         {
+            if (_firstReset)
+            {
+                _firstReset = false;
+            }
+            else
+            {
+                TankAcademy academy = FindObjectOfType<TankAcademy>();
+                Debug.Log("Spawn type " + academy.SpawnType + " reward " + GetReward());
+            }
 
             TankSpawn resetAgent = GetComponent<TankSpawn>();
             resetAgent?.Reset();
@@ -149,18 +155,9 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         private int SpawnIndex()
         {
-            bool useRandom = false;
-            if(useRandom)
-            {
-                int index = Random.Range(0, _config) % spawnTypes.Count;
-                return index;
-            }
-            else
-            {
-                TankAcademy academy = FindObjectOfType<TankAcademy>();
-                int index = academy.SpawnType;
-                return index;
-            }
+            TankAcademy academy = FindObjectOfType<TankAcademy>();
+            int index = academy.SpawnType;
+            return index;
         }
 
         public GameObject GetSpawnTye()
