@@ -157,7 +157,8 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             }
             else
             {
-                int index = 1;
+                TankAcademy academy = FindObjectOfType<TankAcademy>();
+                int index = academy.SpawnType;
                 return index;
             }
         }
