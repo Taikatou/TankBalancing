@@ -52,7 +52,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void CollectObservations()
         {
-            var detectableObjects = new[] { "tank", "wall" };
+            var detectableObjects = new[] { "tank", "wall", "bullet" };
 
             const float rayDistance = 35f;
             float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
@@ -156,7 +156,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             }
             else
             {
-                int index = 2;
+                int index = 1;
                 return index;
             }
         }
