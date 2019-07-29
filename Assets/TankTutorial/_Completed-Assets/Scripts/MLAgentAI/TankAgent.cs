@@ -156,7 +156,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             }
             else
             {
-                int index = 1;
+                int index = 2;
                 return index;
             }
         }
