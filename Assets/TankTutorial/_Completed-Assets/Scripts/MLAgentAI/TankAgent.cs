@@ -121,6 +121,9 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             TankShooting tankShooting = GetComponent<TankShooting>();
             tankShooting?.Reset();
 
+            TankHealth tankHealth = GetComponent<TankHealth>();
+            tankHealth?.ResetHealth();
+
             Spawn();
         }
 
