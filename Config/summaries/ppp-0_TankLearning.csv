@@ -1,2 +1,0 @@
-Brain name,Time to update policy,Time since start of training,Time for last experience collection,Number of experiences used for training,Mean return
-TankLearning,0.650,27.323,25.372,2832,0.451
