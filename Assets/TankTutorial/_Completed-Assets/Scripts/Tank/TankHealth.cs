@@ -94,10 +94,18 @@ namespace Complete
                 if (otherAgent)
                 {
                     otherAgent.AddReward(1);
-                    otherAgent.Done();
+                    // otherAgent.Done();
                 }
-                TankSpawn tankSpawn = GetComponent<TankSpawn>();
-                tankSpawn?.Reset();
+                TankAcademy academy = FindObjectOfType<TankAcademy>();
+                if (academy.Respawn)
+                {
+                    TankSpawn tankSpawn = GetComponent<TankSpawn>();
+                    tankSpawn?.Reset();
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }

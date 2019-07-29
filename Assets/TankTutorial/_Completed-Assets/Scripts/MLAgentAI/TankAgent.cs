@@ -91,6 +91,25 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void AgentAction(float[] vectorAction, string textAction)
         {
+            bool AllDead = Tanks.Count > 0;
+            foreach(var tank in Tanks)
+            {
+                TankHealth health = tank.GetComponentInChildren<TankHealth>();
+                if(health)
+                {
+                    if (health.CurrentHealth > 0.0f)
+                    {
+                        AllDead = false;
+                    }
+                }
+            }
+            if(AllDead)
+            {
+                AddReward(1.0f);
+                Done();
+            }
+
+
             float moveForward = GetDecision(vectorAction[0]);
 
             float turn = GetDecision(vectorAction[1]);
@@ -154,6 +173,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             {
                 Destroy(tank);
             }
+            _tanks = new List<GameObject>();
             foreach (Transform child in spawnObjects)
             {
                 GameObject tank = Instantiate(GetSpawnTye(), child.position, child.rotation);
