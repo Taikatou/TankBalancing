@@ -89,10 +89,15 @@ namespace Complete
                 t.AddReward(-1);
                 t.Done();
             }
-            else if (otherAgent)
+            else
             {
-                otherAgent.AddReward(1);
-                otherAgent.Done();
+                if (otherAgent)
+                {
+                    otherAgent.AddReward(1);
+                    otherAgent.Done();
+                }
+                TankSpawn tankSpawn = GetComponent<TankSpawn>();
+                tankSpawn?.Reset();
             }
         }
     }

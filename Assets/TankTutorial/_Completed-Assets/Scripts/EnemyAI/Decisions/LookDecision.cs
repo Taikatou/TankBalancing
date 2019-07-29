@@ -5,7 +5,7 @@ namespace Assets.TankTutorial.Scripts.AI.Decisions
     [CreateAssetMenu(menuName = "PluggableAI/Decisions/Look")]
     public class LookDecision : StateDecision
     {
-        public string TagName = "tank";
+        public string TagName = "tankPlayer";
 
         public override bool Decide(StateController controller)
         {
@@ -18,8 +18,13 @@ namespace Assets.TankTutorial.Scripts.AI.Decisions
             RaycastHit hit;
 
             Debug.DrawRay(controller.eyes.position, controller.eyes.forward.normalized * controller.enemyStats.lookRange, Color.green);
-            if (Physics.SphereCast(controller.eyes.position, controller.enemyStats.lookSphereCastRadius, controller.eyes.forward, out hit, controller.enemyStats.lookRange)
-                && hit.collider.CompareTag(TagName))
+            bool SphereCast = Physics.SphereCast(   controller.eyes.position,
+                                                    controller.enemyStats.lookSphereCastRadius,
+                                                    controller.eyes.forward,
+                                                    out hit,
+                                                    controller.enemyStats.lookRange);
+
+            if (SphereCast && hit.collider.CompareTag(TagName))
             {
                 controller.chaseTarget = hit.transform;
                 return true;

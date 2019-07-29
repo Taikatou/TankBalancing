@@ -59,7 +59,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
             {
                 rayAngles[i] = i * (degrees / rays);
             }
-            var detectableObjects = new[] { "tank", "wall", "bullet" };
+            var detectableObjects = new[] { "tank", "wall", };
             
 
             AddVectorObs(_mRigidbody.transform.position);
@@ -160,6 +160,11 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
                 if(sController)
                 {
                     sController.WayPointList = WayPointList;
+                }
+                TankSpawn tSpawn = tank.GetComponentInChildren<TankSpawn>();
+                if(tSpawn)
+                {
+                    tSpawn.StartPosition = child;
                 }
                 _tanks.Add(tank);
             }

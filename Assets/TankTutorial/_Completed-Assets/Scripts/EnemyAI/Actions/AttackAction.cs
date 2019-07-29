@@ -5,7 +5,7 @@ namespace Assets.TankTutorial.Scripts.AI.Actions
     [CreateAssetMenu(menuName = "PluggableAI/Actions/Attack")]
     public class AttackAction : AIAction
     {
-        public string TagName = "tank";
+        public string TagName = "tankPlayer";
 
 
         public override void Act(StateController controller)

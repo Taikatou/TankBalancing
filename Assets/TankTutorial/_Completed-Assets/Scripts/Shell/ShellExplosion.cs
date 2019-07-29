@@ -64,18 +64,12 @@ namespace Complete
                     if (dead)
                     {
                         mTankAgent?.AddReward(1.0f);
-                        otherAgent?.AddReward(-1.0f);
-
-                        TankAgent[] tanks = Resources.FindObjectsOfTypeAll<TankAgent>();
-                        foreach (var tank in tanks)
-                        {
-                            tank.Done();
-                        }
+                        //otherAgent?.AddReward(-1.0f);
                     }
                     else if (academy.RewardShots)
                     {
                         mTankAgent?.AddReward(reward);
-                        otherAgent?.AddReward(-reward * rewardRatio);
+                        //otherAgent?.AddReward(-reward * rewardRatio);
                     }
                 }
             }

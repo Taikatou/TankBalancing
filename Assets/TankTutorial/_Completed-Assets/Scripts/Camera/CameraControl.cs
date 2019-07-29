@@ -16,7 +16,14 @@ namespace Complete
             {
                 if (allTanks)
                 {
-                    return GameObject.FindGameObjectsWithTag("tankPlayer");
+                    GameObject [] playerObjects = GameObject.FindGameObjectsWithTag("tankPlayer");
+                    GameObject [] tankObjects = GameObject.FindGameObjectsWithTag("tank");
+                    GameObject [] allTanks = new GameObject[playerObjects.Length + tankObjects.Length];
+
+                    playerObjects.CopyTo(allTanks, allTanks.Length);
+                    tankObjects.CopyTo(allTanks, 0);
+                    
+                    return allTanks;
                 }
                 else
                 {
