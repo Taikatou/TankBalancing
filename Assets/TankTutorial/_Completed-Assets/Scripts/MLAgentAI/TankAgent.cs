@@ -134,6 +134,7 @@ namespace Assets.TankTutorial.Scripts.MLAgentAI
 
         public override void AgentReset()
         {
+
             TankSpawn resetAgent = GetComponent<TankSpawn>();
             resetAgent?.Reset();
 
