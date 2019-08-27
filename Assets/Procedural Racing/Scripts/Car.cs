@@ -25,6 +25,10 @@ public class Car : MonoBehaviour {
 	public float skidMarkSize;
 	public float skidMarkDelay;
 	public float minRotationDifference;
+
+	public bool ControlAI = false;
+
+	public float ControlRotation = 0.0f;
 	
 	public GameObject ragdoll;
 	
@@ -61,13 +65,13 @@ public class Car : MonoBehaviour {
 			wheelMeshes[i].Rotate(Vector3.right * Time.deltaTime * wheelRotateSpeed);
 		}
 		
-		//if the player wants to turn, rotate the car
-		if(Input.GetMouseButton(0) || Input.GetAxis("Horizontal") != 0){
-			UpdateTargetRotation();
+		if(!ControlAI)
+		{
+            UpdateTargetRotation(Input.GetAxis("Horizontal"));
 		}
-		else if(targetRotation != 0){
-			//else, rotate back to the center
-			targetRotation = 0;
+		else
+		{
+            UpdateTargetRotation(ControlRotation);
 		}
 		
 		//apply the rotation by rotating towards the target angle on the y axis
@@ -75,23 +79,19 @@ public class Car : MonoBehaviour {
 		transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(rotation), rotateSpeed * Time.deltaTime);
 	}
 	
-	void UpdateTargetRotation(){
-		//if we're using the mouse to rotate
-		if(Input.GetAxis("Horizontal") == 0){
-			//get the mouse position (left/right side of the screen)
-			if(Input.mousePosition.x > Screen.width * 0.5f){
-				//rotate right
-				targetRotation = rotationAngle;
-			}
-			else{
-				//rotate left
-				targetRotation = -rotationAngle;
-			}
-		}
-		else{
+	void UpdateTargetRotation(float axis)
+	{
+		//if the player wants to turn, rotate the car
+		if (axis != 0)
+		{
 			//if we're pressing arrow keys or a/d, rotate the car based on the horizontal input value
 			targetRotation = (int)(rotationAngle * Input.GetAxis("Horizontal"));
-		}
+        }
+        else if (targetRotation != 0)
+        {
+            //else, rotate back to the center
+            targetRotation = 0;
+        }
 	}
 	
 	void UpdateEffects(){
