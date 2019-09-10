@@ -64,9 +64,7 @@ public class CarAgent : Agent
 
         if (RewardTime)
         {
-            float timePunishment = -1f / agentParameters.maxStep;
-            // Penalty given each step to encourage agent to finish task quickly.
-            AddReward(timePunishment);
+            SetReward(0.01f);
         }
     }
 

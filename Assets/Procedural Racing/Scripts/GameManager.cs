@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
 	public Animator gameOverAnimator;
 	public AudioSource gameOverAudio;
 	public Car car;
+    public CarAcademy academy;
 	
 	//not visible in the inspector
 	float time;
@@ -35,9 +36,15 @@ public class GameManager : MonoBehaviour {
 		//restart the game if we're game over and pressed enter or left mouse button
 		if(gameOver && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))){
 			UIAnimator.SetTrigger("Start");
-			StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
-		}
+
+            ReloadGame();
+        }
 	}
+
+    private void ReloadGame()
+    {
+        StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
+    }
 	
 	void UpdateTimer(){
 		//add time
@@ -91,7 +98,14 @@ public class GameManager : MonoBehaviour {
 			basicMovement.movespeed = 0;
 			basicMovement.rotateSpeed = 0;
 		}
-	}
+
+        if (car.ControlAI && academy)
+        {
+            academy.AcademyReset();
+            ReloadGame();
+        }
+
+    }
 	
 	void SetScore(){
 		//update the highscore if our score is higher then the previous best score

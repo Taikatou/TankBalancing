@@ -67,7 +67,7 @@ public class Car : MonoBehaviour {
 		
 		if(!ControlAI)
 		{
-            UpdateTargetRotation(Input.GetAxis("Horizontal"));
+            //UpdateTargetRotation(Input.GetAxis("Horizontal"));
 		}
 		else
 		{

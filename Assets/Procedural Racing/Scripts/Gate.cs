@@ -27,5 +27,7 @@ public class Gate : MonoBehaviour {
 		scoreAudio.Play();
         CarAgent car = other.gameObject.GetComponent<CarAgent>();
 		car?.PassGate();
+
+
 	}
 }
