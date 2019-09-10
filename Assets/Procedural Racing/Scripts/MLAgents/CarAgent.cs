@@ -17,12 +17,15 @@ public class CarAgent : Agent
     //variables visible in the inspector
     public Rigidbody rb;
 
+    private Transform _originalTransform;
+
     public override void InitializeAgent()
     {
         base.InitializeAgent();
         _rayPer = GetComponent<RayPerception>();
         CarControl = GetComponent<Car>();
         CarControl.ControlAI = true;
+        _originalTransform = rb.transform;
     }
 
     public override void CollectObservations()
@@ -71,5 +74,11 @@ public class CarAgent : Agent
     public void PassGate()
     {
         AddReward(1.0f);
+    }
+
+    public void Reset()
+    {
+        rb.MovePosition(_originalTransform.position);
+        rb.MoveRotation(_originalTransform.rotation);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Barracuda;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -31,7 +32,7 @@ public class WorldGenerator : MonoBehaviour {
 	
 	GameObject currentCylinder;
 	
-	void Start(){
+	public void GenerateMap(){
 		//create an array to store the begin vertices for each world part (we'll need that to correctly transition between world pieces) 
 		beginPoints = new Vector3[(int)dimensions.x + 1];
 		
@@ -103,6 +104,14 @@ public class WorldGenerator : MonoBehaviour {
 		//wait a frame
 		yield return 0;
 	}
+
+    public void Destroy()
+    {
+        foreach (var piece in pieces)
+        {
+            Destroy(piece);
+        }
+    }
 	
 	void UpdateSinglePiece(GameObject piece){
 		//add the basic movement script to our newly generated piece to make it move towards the player

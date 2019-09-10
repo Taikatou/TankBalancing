@@ -89,11 +89,8 @@ public class GameManager : MonoBehaviour {
 		
 		//the game is over
 		gameOver = true;
-		
-		//break the car
-		car.FallApart();
-		
-		//stop the world from moving or rotating
+
+        //stop the world from moving or rotating
 		foreach(BasicMovement basicMovement in GameObject.FindObjectsOfType<BasicMovement>()){
 			basicMovement.movespeed = 0;
 			basicMovement.rotateSpeed = 0;
@@ -103,6 +100,11 @@ public class GameManager : MonoBehaviour {
         {
             academy.AcademyReset();
             ReloadGame();
+        }
+        else
+        {
+            //break the car
+            car.FallApart();
         }
 
     }

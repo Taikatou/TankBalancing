@@ -5,5 +5,12 @@ using MLAgents;
 
 public class CarAcademy : Academy
 {
-
+    public CarAgent car;
+    public WorldGenerator worldGenerator;
+    public override void AcademyReset()
+    {
+        worldGenerator?.Destroy();
+        worldGenerator?.GenerateMap();
+        car?.Reset();
+    }
 }
