@@ -32,6 +32,10 @@ public class WorldGenerator : MonoBehaviour {
 	
 	GameObject currentCylinder;
 	
+	private void Start() {
+		GenerateMap();
+	}
+
 	public void GenerateMap(){
 		//create an array to store the begin vertices for each world part (we'll need that to correctly transition between world pieces) 
 		beginPoints = new Vector3[(int)dimensions.x + 1];

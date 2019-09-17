@@ -19,13 +19,19 @@ public class CarAgent : Agent
 
     private Transform _originalTransform;
 
+    private bool _readFirst = false;
+
     public override void InitializeAgent()
     {
         base.InitializeAgent();
         _rayPer = GetComponent<RayPerception>();
         CarControl = GetComponent<Car>();
         CarControl.ControlAI = true;
-        _originalTransform = rb.transform;
+        if(!_readFirst)
+        {
+            _readFirst = true;
+            _originalTransform = rb.transform;
+        }
     }
 
     public override void CollectObservations()
@@ -78,7 +84,11 @@ public class CarAgent : Agent
 
     public void Reset()
     {
-        rb.MovePosition(_originalTransform.position);
-        rb.MoveRotation(_originalTransform.rotation);
+        if(_readFirst)
+        {
+            rb.MovePosition(_originalTransform.position);
+            rb.MoveRotation(_originalTransform.rotation);
+            rb.velocity = Vector3.zero;
+        }
     }
 }

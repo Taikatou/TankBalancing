@@ -37,13 +37,19 @@ public class GameManager : MonoBehaviour {
 		if(gameOver && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))){
 			UIAnimator.SetTrigger("Start");
 
-            ReloadGame();
+            if (!car.ControlAI)
+			{
+                ReloadGame();
+			}
         }
 	}
 
     private void ReloadGame()
     {
-        StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
+        if (!car.ControlAI)
+        {
+        	//StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
+		}
     }
 	
 	void UpdateTimer(){
@@ -79,22 +85,6 @@ public class GameManager : MonoBehaviour {
 		//the game cannot be over multiple times so we need to return if the game was over already
 		if(gameOver)
 			return;
-		
-		//update the score and highscore
-		SetScore();
-		
-		//show the game over animation and play the audio
-		gameOverAnimator.SetTrigger("Game over");
-		gameOverAudio.Play();
-		
-		//the game is over
-		gameOver = true;
-
-        //stop the world from moving or rotating
-		foreach(BasicMovement basicMovement in GameObject.FindObjectsOfType<BasicMovement>()){
-			basicMovement.movespeed = 0;
-			basicMovement.rotateSpeed = 0;
-		}
 
         if (car.ControlAI && academy)
         {
@@ -103,10 +93,25 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
+            //update the score and highscore
+            SetScore();
+
             //break the car
             car.FallApart();
-        }
+            //show the game over animation and play the audio
+            gameOverAnimator.SetTrigger("Game over");
+            gameOverAudio.Play();
 
+            //the game is over
+            gameOver = true;
+
+            //stop the world from moving or rotating
+            foreach (BasicMovement basicMovement in GameObject.FindObjectsOfType<BasicMovement>())
+            {
+                basicMovement.movespeed = 0;
+                basicMovement.rotateSpeed = 0;
+            }
+        }
     }
 	
 	void SetScore(){

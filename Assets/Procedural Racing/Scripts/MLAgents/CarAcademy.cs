@@ -9,8 +9,10 @@ public class CarAcademy : Academy
     public WorldGenerator worldGenerator;
     public override void AcademyReset()
     {
-        worldGenerator?.Destroy();
-        worldGenerator?.GenerateMap();
-        car?.Reset();
+        worldGenerator.Destroy();
+        worldGenerator.GenerateMap();
+        car.Reset();
     }
+
+    
 }
