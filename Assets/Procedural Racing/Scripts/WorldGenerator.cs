@@ -24,6 +24,8 @@ public class WorldGenerator : MonoBehaviour {
 	public int gateChance;
 	public int showItemDistance;
 	public float shadowHeight;
+
+    private int _obstacleChance;
 	
 	//not visible in the inspector
 	Vector3[] beginPoints;
@@ -31,10 +33,13 @@ public class WorldGenerator : MonoBehaviour {
 	GameObject[] pieces = new GameObject[2];
 	
 	GameObject currentCylinder;
-	
-	private void Start() {
+
+    private List<GameObject> _gameObstacles = new List<GameObject>();
+
+    private void Start() {
 		GenerateMap();
-	}
+        _obstacleChance = startObstacleChance;
+    }
 
 	public void GenerateMap(){
 		//create an array to store the begin vertices for each world part (we'll need that to correctly transition between world pieces) 
@@ -53,24 +58,24 @@ public class WorldGenerator : MonoBehaviour {
 		
 		//update all items in the scene like spikes and gates
 		UpdateAllItems();
+        Debug.Log(_gameObstacles.Count);
 	}
 	
 	void UpdateAllItems(){
 		//find all items
-		GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
-		
-		//for all items
-		for(int i = 0; i < items.Length; i++){
+
+        //for all items
+		for(int i = 0; i < _gameObstacles.Count; i++){
 			//get all meshrenderers of this item
-			foreach(MeshRenderer renderer in items[i].GetComponentsInChildren<MeshRenderer>()){
+			foreach(MeshRenderer renderer in _gameObstacles[i].GetComponentsInChildren<MeshRenderer>()){
 				//show this item if it's sufficiently close to the player
-				bool show = items[i].transform.position.z < showItemDistance;
+				bool show = _gameObstacles[i].transform.position.z < showItemDistance;
 				
 				//if we want to show this item, update it's shadowCastingMode
 				//since the world is a cylinder, we only need shadows for the objects on the bottom half of the cylinder
 				//otherwise you'd see weird shadows everywhere coming from the objects at the top of the cylinder
 				if(show)
-					renderer.shadowCastingMode = (items[i].transform.position.y < shadowHeight) ? ShadowCastingMode.On : ShadowCastingMode.Off;
+					renderer.shadowCastingMode = (_gameObstacles[i].transform.position.y < shadowHeight) ? ShadowCastingMode.On : ShadowCastingMode.Off;
 				
 				//only enable the renderer if we want to show this item
 				renderer.enabled = show;
@@ -90,10 +95,24 @@ public class WorldGenerator : MonoBehaviour {
 	
 	IEnumerator UpdateWorldPieces(){
 		//remove the first piece (that is not visible to the player anymore)
-		Destroy(pieces[0]);
-		
-		//assign the second piece to the first piece in the world array
-		pieces[0] = pieces[1];
+		List<GameObject> items = new List<GameObject>();
+        foreach (var item in _gameObstacles)
+        {
+            if (item.transform.parent == pieces[0].transform)
+            {
+                items.Add(item);
+            }
+        }
+
+        foreach (var item in items)
+        {
+            _gameObstacles.Remove(item);
+            Destroy(item);
+        }
+
+        Destroy(pieces[0]);
+        //assign the second piece to the first piece in the world array
+        pieces[0] = pieces[1];
 		
 		//new create a new second piece
 		pieces[1] = CreateCylinder();
@@ -115,6 +134,14 @@ public class WorldGenerator : MonoBehaviour {
         {
             Destroy(piece);
         }
+
+        foreach (var item in _gameObstacles)
+        {
+            Destroy(item);
+        }
+        _gameObstacles.Clear();
+        _gameObstacles = new List<GameObject>();
+        startObstacleChance = _obstacleChance;
     }
 	
 	void UpdateSinglePiece(GameObject piece){
@@ -200,10 +227,12 @@ public class WorldGenerator : MonoBehaviour {
 		uvs = new Vector2[(xCount + 1) * (zCount + 1)];
 		
 		int index = 0;
-		
+
+        int randomCount = 0;
+
 		//get the cylinder radius
 		float radius = xCount * scale * 0.5f;
-		
+		//Debug.Log(xCount + "\t" + zCount);
 		//nest two loops to go through all vertices on the x and z axis
 		for(int x = 0; x <= xCount; x++){
 			for(int z = 0; z <= zCount; z++){
@@ -248,14 +277,18 @@ public class WorldGenerator : MonoBehaviour {
 				}
 				
 				//spawn items at random positions using the mesh vertices
-				if(Random.Range(0, startObstacleChance) == 0 && !(gate == null && obstacles.Length == 0))
-					CreateItem(vertices[index], x);
+                if (Random.Range(0, startObstacleChance) == 0 && !(gate == null && obstacles.Length == 0))
+                {
+                    CreateItem(vertices[index], x);
+                    randomCount++;
+                }
+					
 				
 				//increase the current vertice index
 				index++;
 			}
 		}
-		
+		Debug.Log(randomCount);
 		//initialize the array of triangles (x * z is the number of squares, and each square has two triangles so 6 vertices)
 		triangles = new int[xCount * zCount * 6];
 		
@@ -320,7 +353,9 @@ public class WorldGenerator : MonoBehaviour {
 		
 		//parent the new item to the current cylinder so it will move and rotate along
 		newItem.transform.SetParent(currentCylinder.transform, false);
-	}
+
+        _gameObstacles.Add(newItem);
+    }
 	
 	public Transform GetWorldPiece(){
 		//return the first world piece

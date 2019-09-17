@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using MLAgents;
+using Vector3 = UnityEngine.Vector3;
+using Quaternion = UnityEngine.Quaternion;
 
 public class CarAgent : Agent
 {
@@ -17,9 +20,13 @@ public class CarAgent : Agent
     //variables visible in the inspector
     public Rigidbody rb;
 
-    private Transform _originalTransform;
+    private Vector3 _originalPosition;
+
+    private Quaternion _originalRotation;
 
     private bool _readFirst = false;
+
+    public CarAcademy academy;
 
     public override void InitializeAgent()
     {
@@ -30,7 +37,8 @@ public class CarAgent : Agent
         if(!_readFirst)
         {
             _readFirst = true;
-            _originalTransform = rb.transform;
+            _originalPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            _originalRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
         }
     }
 
@@ -86,9 +94,18 @@ public class CarAgent : Agent
     {
         if(_readFirst)
         {
-            rb.MovePosition(_originalTransform.position);
-            rb.MoveRotation(_originalTransform.rotation);
+            transform.position = _originalPosition;
+            transform.rotation = _originalRotation;
             rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+    }
+
+    private void Update()
+    {
+        if (transform.position.y < -25)
+        {
+            academy.AcademyReset();
         }
     }
 }

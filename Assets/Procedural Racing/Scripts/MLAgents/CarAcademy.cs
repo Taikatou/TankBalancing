@@ -13,6 +13,4 @@ public class CarAcademy : Academy
         worldGenerator.GenerateMap();
         car.Reset();
     }
-
-    
 }
