@@ -58,7 +58,7 @@ public class WorldGenerator : MonoBehaviour {
 		
 		//update all items in the scene like spikes and gates
 		UpdateAllItems();
-        Debug.Log(_gameObstacles.Count);
+        //Debug.Log(_gameObstacles.Count);
 	}
 	
 	void UpdateAllItems(){
@@ -288,7 +288,7 @@ public class WorldGenerator : MonoBehaviour {
 				index++;
 			}
 		}
-		Debug.Log(randomCount);
+		//Debug.Log(randomCount);
 		//initialize the array of triangles (x * z is the number of squares, and each square has two triangles so 6 vertices)
 		triangles = new int[xCount * zCount * 6];
 		

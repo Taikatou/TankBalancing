@@ -71,6 +71,7 @@ public class Car : MonoBehaviour {
 		}
 		else
 		{
+            Debug.Log(ControlRotation);
             UpdateTargetRotation(ControlRotation);
 		}
 		
